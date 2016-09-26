@@ -37,6 +37,7 @@ import com.android.systemui.util.leak.GarbageMonitor;
 
 // Custom tiles
 import com.pixeldust.android.systemui.qs.tiles.CaffeineTile;
+import com.pixeldust.android.systemui.qs.tiles.SyncTile;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -46,6 +47,7 @@ import dagger.Lazy;
 public class QSFactoryImplPixeldust extends QSFactoryImpl {
 
     private final Provider<CaffeineTile> mCaffeineTileProvider;
+    private final Provider<SyncTile> mSyncTileProvider;
 
     @Inject
     public QSFactoryImplPixeldust(
@@ -78,19 +80,23 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
             Provider<DeviceControlsTile> deviceControlsTileProvider,
             Provider<AlarmTile> alarmTileProvider,
             Provider<QuickAccessWalletTile> quickAccessWalletTileProvider,
-            Provider<CaffeineTile> caffeineTileProvider) {
+            Provider<CaffeineTile> caffeineTileProvider,
+            Provider<SyncTile> syncTileProvider) {
         super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
             airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider, locationTileProvider, castTileProvider, hotspotTileProvider, userTileProvider,
             batterySaverTileProvider, dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
             cameraToggleTileProvider, microphoneToggleTileProvider, deviceControlsTileProvider, alarmTileProvider, quickAccessWalletTileProvider);
         // custom tile
         mCaffeineTileProvider = caffeineTileProvider;
+        mSyncTileProvider = syncTileProvider;
     }
 
     private QSTileImpl createTilePixeldust(String tileSpec) {
         switch(tileSpec) {
             case "caffeine":
                 return mCaffeineTileProvider.get();
+            case "sync":
+                return mSyncTileProvider.get();
             default:
                 return null;
         }
