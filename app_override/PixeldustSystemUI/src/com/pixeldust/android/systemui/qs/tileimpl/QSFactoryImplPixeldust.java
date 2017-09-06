@@ -1,10 +1,12 @@
 package com.pixeldust.android.systemui.qs.tileimpl;
 
+// keep in sync with frameworks/base/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSFactoryImpl.java
 import com.android.systemui.dagger.SysUISingleton;
+import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.external.CustomTile;
 import com.android.systemui.qs.tileimpl.QSFactoryImpl;
-import com.android.systemui.qs.external.CustomTile;
+import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
 import com.android.systemui.qs.tiles.AlarmTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
@@ -33,12 +35,17 @@ import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.WorkModeTile;
 import com.android.systemui.util.leak.GarbageMonitor;
 
+// Custom tiles
+import com.pixeldust.android.systemui.qs.tiles.CaffeineTile;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import dagger.Lazy;
 
 public class QSFactoryImplPixeldust extends QSFactoryImpl {
+
+    private final Provider<CaffeineTile> mCaffeineTileProvider;
 
     @Inject
     public QSFactoryImplPixeldust(
@@ -70,10 +77,28 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
             Provider<MicrophoneToggleTile> microphoneToggleTileProvider,
             Provider<DeviceControlsTile> deviceControlsTileProvider,
             Provider<AlarmTile> alarmTileProvider,
-            Provider<QuickAccessWalletTile> quickAccessWalletTileProvider) {
+            Provider<QuickAccessWalletTile> quickAccessWalletTileProvider,
+            Provider<CaffeineTile> caffeineTileProvider) {
         super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
             airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider, locationTileProvider, castTileProvider, hotspotTileProvider, userTileProvider,
             batterySaverTileProvider, dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
             cameraToggleTileProvider, microphoneToggleTileProvider, deviceControlsTileProvider, alarmTileProvider, quickAccessWalletTileProvider);
+        // custom tile
+        mCaffeineTileProvider = caffeineTileProvider;
+    }
+
+    private QSTileImpl createTilePixeldust(String tileSpec) {
+        switch(tileSpec) {
+            case "caffeine":
+                return mCaffeineTileProvider.get();
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public QSTile createTile(String tileSpec) {
+        QSTile tile = createTilePixeldust(tileSpec);
+        return tile != null ? tile : super.createTile(tileSpec);
     }
 }
