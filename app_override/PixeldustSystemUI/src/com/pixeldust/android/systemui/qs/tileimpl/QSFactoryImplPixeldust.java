@@ -39,6 +39,7 @@ import com.android.systemui.util.leak.GarbageMonitor;
 import com.pixeldust.android.systemui.qs.tiles.AODTile;
 import com.pixeldust.android.systemui.qs.tiles.CaffeineTile;
 import com.pixeldust.android.systemui.qs.tiles.DataSwitchTile;
+import com.pixeldust.android.systemui.qs.tiles.LocaleTile;
 import com.pixeldust.android.systemui.qs.tiles.PDSettingsTile;
 import com.pixeldust.android.systemui.qs.tiles.SyncTile;
 import com.pixeldust.android.systemui.qs.tiles.VpnTile;
@@ -56,6 +57,7 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
     private final Provider<AODTile> mAODTileProvider;
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
     private final Provider<PDSettingsTile> mPDSettingsTileProvider;
+    private final Provider<LocaleTile> mLocaleTileProvider;
 
     @Inject
     public QSFactoryImplPixeldust(
@@ -93,7 +95,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
             Provider<VpnTile> vpnTileProvider,
             Provider<AODTile> aodTileProvider,
             Provider<DataSwitchTile> dataSwitchTileProvider,
-            Provider<PDSettingsTile> pdSettingsTileProvider) {
+            Provider<PDSettingsTile> pdSettingsTileProvider,
+            Provider<LocaleTile> localeTileProvider) {
         super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
             airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider, locationTileProvider, castTileProvider, hotspotTileProvider, userTileProvider,
             batterySaverTileProvider, dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
@@ -105,6 +108,7 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
         mAODTileProvider = aodTileProvider;
         mDataSwitchTileProvider = dataSwitchTileProvider;
         mPDSettingsTileProvider = pdSettingsTileProvider;
+        mLocaleTileProvider = localeTileProvider;
     }
 
     private QSTileImpl createTilePixeldust(String tileSpec) {
@@ -121,6 +125,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
                 return mDataSwitchTileProvider.get();
             case "pixeldust_settings":
                 return mPDSettingsTileProvider.get();
+            case "locale":
+                return mLocaleTileProvider.get();
             default:
                 return null;
         }
