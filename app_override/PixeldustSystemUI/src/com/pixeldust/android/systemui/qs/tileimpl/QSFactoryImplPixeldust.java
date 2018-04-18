@@ -36,6 +36,7 @@ import com.android.systemui.qs.tiles.WorkModeTile;
 import com.android.systemui.util.leak.GarbageMonitor;
 
 // Custom tiles
+import com.pixeldust.android.systemui.qs.tiles.AODTile;
 import com.pixeldust.android.systemui.qs.tiles.CaffeineTile;
 import com.pixeldust.android.systemui.qs.tiles.SyncTile;
 import com.pixeldust.android.systemui.qs.tiles.VpnTile;
@@ -50,6 +51,7 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
     private final Provider<CaffeineTile> mCaffeineTileProvider;
     private final Provider<SyncTile> mSyncTileProvider;
     private final Provider<VpnTile> mVpnTileProvider;
+    private final Provider<AODTile> mAODTileProvider;
 
     @Inject
     public QSFactoryImplPixeldust(
@@ -84,7 +86,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
             Provider<QuickAccessWalletTile> quickAccessWalletTileProvider,
             Provider<CaffeineTile> caffeineTileProvider,
             Provider<SyncTile> syncTileProvider,
-            Provider<VpnTile> vpnTileProvider) {
+            Provider<VpnTile> vpnTileProvider,
+            Provider<AODTile> aodTileProvider) {
         super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
             airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider, locationTileProvider, castTileProvider, hotspotTileProvider, userTileProvider,
             batterySaverTileProvider, dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
@@ -93,7 +96,7 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
         mCaffeineTileProvider = caffeineTileProvider;
         mSyncTileProvider = syncTileProvider;
         mVpnTileProvider = vpnTileProvider;
-
+        mAODTileProvider = aodTileProvider;
     }
 
     private QSTileImpl createTilePixeldust(String tileSpec) {
@@ -104,6 +107,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
                 return mSyncTileProvider.get();
             case "vpn":
                 return mVpnTileProvider.get();
+            case "aod":
+                return mAODTileProvider.get();
             default:
                 return null;
         }
