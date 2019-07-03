@@ -38,6 +38,7 @@ import com.android.systemui.util.leak.GarbageMonitor;
 // Custom tiles
 import com.pixeldust.android.systemui.qs.tiles.CaffeineTile;
 import com.pixeldust.android.systemui.qs.tiles.SyncTile;
+import com.pixeldust.android.systemui.qs.tiles.VpnTile;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -48,6 +49,7 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
 
     private final Provider<CaffeineTile> mCaffeineTileProvider;
     private final Provider<SyncTile> mSyncTileProvider;
+    private final Provider<VpnTile> mVpnTileProvider;
 
     @Inject
     public QSFactoryImplPixeldust(
@@ -81,7 +83,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
             Provider<AlarmTile> alarmTileProvider,
             Provider<QuickAccessWalletTile> quickAccessWalletTileProvider,
             Provider<CaffeineTile> caffeineTileProvider,
-            Provider<SyncTile> syncTileProvider) {
+            Provider<SyncTile> syncTileProvider,
+            Provider<VpnTile> vpnTileProvider) {
         super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
             airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider, locationTileProvider, castTileProvider, hotspotTileProvider, userTileProvider,
             batterySaverTileProvider, dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
@@ -89,6 +92,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
         // custom tile
         mCaffeineTileProvider = caffeineTileProvider;
         mSyncTileProvider = syncTileProvider;
+        mVpnTileProvider = vpnTileProvider;
+
     }
 
     private QSTileImpl createTilePixeldust(String tileSpec) {
@@ -97,6 +102,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
                 return mCaffeineTileProvider.get();
             case "sync":
                 return mSyncTileProvider.get();
+            case "vpn":
+                return mVpnTileProvider.get();
             default:
                 return null;
         }
