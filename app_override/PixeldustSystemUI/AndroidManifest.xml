@@ -52,6 +52,9 @@
     <!-- VPN tile -->
     <uses-permission android:name="android.permission.NETWORK_STACK" />
 
+    <!-- DataSwitch tile -->
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+
     <application>
         <provider android:name=".keyguard.KeyguardSliceProvider"
             tools:node="remove" />

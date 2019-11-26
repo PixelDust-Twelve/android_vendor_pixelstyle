@@ -38,6 +38,7 @@ import com.android.systemui.util.leak.GarbageMonitor;
 // Custom tiles
 import com.pixeldust.android.systemui.qs.tiles.AODTile;
 import com.pixeldust.android.systemui.qs.tiles.CaffeineTile;
+import com.pixeldust.android.systemui.qs.tiles.DataSwitchTile;
 import com.pixeldust.android.systemui.qs.tiles.SyncTile;
 import com.pixeldust.android.systemui.qs.tiles.VpnTile;
 
@@ -52,6 +53,7 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
     private final Provider<SyncTile> mSyncTileProvider;
     private final Provider<VpnTile> mVpnTileProvider;
     private final Provider<AODTile> mAODTileProvider;
+    private final Provider<DataSwitchTile> mDataSwitchTileProvider;
 
     @Inject
     public QSFactoryImplPixeldust(
@@ -87,7 +89,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
             Provider<CaffeineTile> caffeineTileProvider,
             Provider<SyncTile> syncTileProvider,
             Provider<VpnTile> vpnTileProvider,
-            Provider<AODTile> aodTileProvider) {
+            Provider<AODTile> aodTileProvider,
+            Provider<DataSwitchTile> dataSwitchTileProvider) {
         super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
             airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider, locationTileProvider, castTileProvider, hotspotTileProvider, userTileProvider,
             batterySaverTileProvider, dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
@@ -97,6 +100,7 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
         mSyncTileProvider = syncTileProvider;
         mVpnTileProvider = vpnTileProvider;
         mAODTileProvider = aodTileProvider;
+        mDataSwitchTileProvider = dataSwitchTileProvider;
     }
 
     private QSTileImpl createTilePixeldust(String tileSpec) {
@@ -109,6 +113,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
                 return mVpnTileProvider.get();
             case "aod":
                 return mAODTileProvider.get();
+            case "dataswitch":
+                return mDataSwitchTileProvider.get();
             default:
                 return null;
         }
