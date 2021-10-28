@@ -18,6 +18,7 @@ import com.google.android.systemui.smartspace.SmartSpaceController;
 
 import com.pixeldust.android.systemui.biometrics.PixeldustUdfpsHbmProvider;
 import com.pixeldust.android.systemui.smartspace.KeyguardSmartspaceController;
+import com.pixeldust.android.systemui.qs.tileimpl.QSFactoryImplPixeldust;
 import com.pixeldust.android.systemui.theme.ThemeOverlayControllerPixeldust;
 
 import com.android.keyguard.KeyguardUpdateMonitor;
@@ -147,7 +148,7 @@ public abstract class SystemUIPixeldustModule {
 
     @Binds
     @SysUISingleton
-    public abstract QSFactory bindQSFactory(QSFactoryImpl qsFactoryImpl);
+    public abstract QSFactory bindQSFactory(QSFactoryImplPixeldust qsFactoryImpl);
 
     @Binds
     abstract DockManager bindDockManager(DockManagerImpl dockManager);
