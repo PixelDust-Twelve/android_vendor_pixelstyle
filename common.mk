@@ -25,3 +25,9 @@ PRODUCT_PACKAGES += \
 # Sysconfig
 PRODUCT_COPY_FILES += \
     vendor/pixelstyle/prebuilt/common/etc/sysconfig/game_overlay.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/game_overlay.xml
+
+# Copy quick tap enable sysconfig
+ifneq ($(DISABLE_COLUMBUS), true)
+PRODUCT_COPY_FILES += \
+    vendor/pixelstyle/prebuilt/common/etc/sysconfig/quick_tap.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/quick_tap.xml
+endif

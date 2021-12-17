@@ -7,6 +7,8 @@ import com.android.systemui.dagger.SystemUIBinder;
 import com.android.systemui.dagger.SysUIComponent;
 import com.android.systemui.dagger.SystemUIModule;
 
+import com.pixeldust.android.systemui.columbus.ColumbusModule;
+import com.pixeldust.android.systemui.elmyra.ElmyraModule;
 import com.pixeldust.android.systemui.gamedashboard.GameDashboardModule;
 import com.pixeldust.android.systemui.keyguard.KeyguardSliceProviderPixeldust;
 import com.pixeldust.android.systemui.smartspace.KeyguardSmartspaceController;
@@ -15,8 +17,10 @@ import dagger.Subcomponent;
 
 @SysUISingleton
 @Subcomponent(modules = {
+        ColumbusModule.class,
         DefaultComponentBinder.class,
         DependencyProvider.class,
+        ElmyraModule.class,
         GameDashboardModule.class,
         SystemUIModule.class,
         SystemUIPixeldustBinder.class,
