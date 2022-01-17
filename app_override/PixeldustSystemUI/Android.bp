@@ -1,7 +1,3 @@
-soong_namespace {
-    imports: ["hardware/google/interfaces"],
-}
-
 android_library {
     name: "PixeldustSystemUI-core",
     aaptflags: [
@@ -28,7 +24,7 @@ android_library {
         "themelib",
         "SystemUI-core",
         "tensorflowlite_java",
-        "com.google.hardware.pixel.display-V3-java",
+        "//hardware/google/interfaces:com.google.hardware.pixel.display-V3-java",
     ],
     manifest: "AndroidManifest.xml",
 
