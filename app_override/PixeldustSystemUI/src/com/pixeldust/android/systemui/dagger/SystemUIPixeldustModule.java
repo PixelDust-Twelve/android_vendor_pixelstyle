@@ -296,8 +296,8 @@ public abstract class SystemUIPixeldustModule {
 
     @Provides
     @SysUISingleton
-    static PixeldustServices providePixeldustServices(Context context, UiEventLogger uiEventLogger, Lazy<ServiceConfigurationGoogle> lazy, Lazy<ColumbusServiceWrapper> lazyB) {
-        return new PixeldustServices(context, uiEventLogger, lazy, lazyB);
+    static PixeldustServices providePixeldustServices(Context context, UiEventLogger uiEventLogger, Lazy<ServiceConfigurationGoogle> lazy, Lazy<ColumbusServiceWrapper> lazyB, AlarmManager am, StatusBar sb) {
+        return new PixeldustServices(context, uiEventLogger, lazy, lazyB, am, sb);
     }
 
     // Google
