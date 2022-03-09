@@ -100,8 +100,7 @@ import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.power.EnhancedEstimates;
 import com.android.systemui.power.EnhancedEstimatesImpl;
-import com.android.systemui.power.PowerUI;
-import com.android.systemui.power.PowerNotificationWarnings;
+import com.android.systemui.power.dagger.PowerModule;
 import com.android.systemui.qs.dagger.QSModule;
 import com.android.systemui.qs.tileimpl.QSFactoryImpl;
 import com.android.systemui.recents.OverviewProxyService;
@@ -142,6 +141,7 @@ import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.sensors.ProximitySensor;
+import com.android.systemui.volume.dagger.VolumeModule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -164,7 +164,9 @@ import dagger.multibindings.ElementsIntoSet;
 
 @Module(includes = {
         MediaModule.class,
-        QSModule.class
+        PowerModule.class,
+        QSModule.class,
+        VolumeModule.class
 })
 public abstract class SystemUIPixeldustModule {
 
@@ -254,12 +256,6 @@ public abstract class SystemUIPixeldustModule {
             ConfigurationController configurationController) {
         return new HeadsUpManagerPhone(context, statusBarStateController, bypassController,
                 groupManager, configurationController);
-    }
-
-    @SysUISingleton
-    @Provides
-    static PowerUI.WarningsUI provideWarningsUi(PowerNotificationWarnings controllerImpl) {
-        return controllerImpl;
     }
 
     @Binds
