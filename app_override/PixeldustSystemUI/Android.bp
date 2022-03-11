@@ -9,6 +9,7 @@ android_library {
         "res",
         "res-assist",
         "res-columbus",
+        "res-elmyra",
         "res-gamedashboard",
         "res-keyguard",
         "res-smartspace",
