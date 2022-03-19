@@ -106,7 +106,6 @@ import com.android.systemui.qs.tileimpl.QSFactoryImpl;
 import com.android.systemui.recents.OverviewProxyService;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.RecentsImplementation;
-import com.android.systemui.settings.UserContentResolverProvider;
 import com.android.systemui.settings.UserTracker;
 import com.android.systemui.statusbar.commandline.CommandRegistry;
 import com.android.systemui.statusbar.CommandQueue;
@@ -192,8 +191,7 @@ public abstract class SystemUIPixeldustModule {
             BroadcastDispatcher broadcastDispatcher,
             DemoModeController demoModeController,
             @Main Handler mainHandler,
-            @Background Handler bgHandler,
-            UserContentResolverProvider userContentResolverProvider) {
+            @Background Handler bgHandler) {
         BatteryController bC = new BatteryControllerImpl(
                 context,
                 enhancedEstimates,
@@ -201,8 +199,7 @@ public abstract class SystemUIPixeldustModule {
                 broadcastDispatcher,
                 demoModeController,
                 mainHandler,
-                bgHandler,
-                userContentResolverProvider = userContentResolverProvider);
+                bgHandler);
         bC.init();
         return bC;
     }
