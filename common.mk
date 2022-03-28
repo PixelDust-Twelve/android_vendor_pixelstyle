@@ -19,6 +19,10 @@ PRODUCT_PACKAGES += \
     PixeldustSystemUI \
     PixeldustSettings
 
+# Preopt PixeldustSystemUI
+PRODUCT_DEXPREOPT_SPEED_APPS += \
+    PixeldustSystemUI
+
 # Sysconfig
 PRODUCT_COPY_FILES += \
     vendor/pixelstyle/prebuilt/common/etc/sysconfig/game_overlay.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/game_overlay.xml
