@@ -11,12 +11,15 @@ android_library {
     ],
     resource_dirs: [
         "res",
+        "res-pixel",
     ],
     static_libs: [
         "colorkt",
         "themelib",
         "SystemUI-core",
+        "SystemUIGoogle-lib",
         "tensorflowlite_java",
+        "android.frameworks.stats-V1-java",
         "com.google.hardware.pixel.display-V3-java",
         "vendor-pixelatoms-java",
     ],

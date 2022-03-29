@@ -16,6 +16,7 @@
 
 package com.pixeldust.android.systemui;
 
+import android.app.AlarmManager;
 import android.content.Context;
 
 import com.android.internal.logging.UiEventLogger;
@@ -23,14 +24,20 @@ import com.android.systemui.Dumpable;
 import com.android.systemui.R;
 import com.android.systemui.VendorServices;
 import com.android.systemui.dagger.SysUISingleton;
-import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.statusbar.phone.StatusBar;
 
+import com.google.android.systemui.DisplayCutoutEmulationAdapter;
+import com.google.android.systemui.ambientmusic.AmbientIndicationContainer;
+import com.google.android.systemui.ambientmusic.AmbientIndicationService;
+import com.google.android.systemui.autorotate.AutorotateDataService;
 import com.google.android.systemui.columbus.ColumbusContext;
 import com.google.android.systemui.columbus.ColumbusServiceWrapper;
+import com.google.android.systemui.coversheet.CoversheetService;
 import com.google.android.systemui.elmyra.ElmyraContext;
 import com.google.android.systemui.elmyra.ElmyraService;
 import com.google.android.systemui.elmyra.ServiceConfigurationGoogle;
+import com.google.android.systemui.face.FaceNotificationService;
+import com.google.android.systemui.input.TouchContextService;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -42,27 +49,45 @@ import dagger.Lazy;
 
 @SysUISingleton
 public class PixeldustServices extends VendorServices {
-
-    private final UiEventLogger mUiEventLogger;
+    private final AlarmManager mAlarmManager;
+    private final AutorotateDataService mAutorotateDataService;
     private final Lazy<ColumbusServiceWrapper> mColumbusServiceLazy;
     private final Lazy<ServiceConfigurationGoogle> mServiceConfigurationGoogle;
     private final ArrayList<Object> mServices = new ArrayList<>();
+    private final StatusBar mStatusBar;
+    private final UiEventLogger mUiEventLogger;
 
     @Inject
-    public PixeldustServices(Context context, UiEventLogger uiEventLogger, Lazy<ServiceConfigurationGoogle> serviceConfigurationGoogle, Lazy<ColumbusServiceWrapper> columbusService) {
+    public PixeldustServices(Context context, Lazy<ServiceConfigurationGoogle> serviceConfigurationGoogle, StatusBar statusBar, UiEventLogger uiEventLogger, Lazy<ColumbusServiceWrapper> columbusService, AlarmManager alarmManager, AutorotateDataService autorotateDataService) {
         super(context);
-        mUiEventLogger = uiEventLogger;
         mServiceConfigurationGoogle = serviceConfigurationGoogle;
+        mStatusBar = statusBar;
+        mUiEventLogger = uiEventLogger;
         mColumbusServiceLazy = columbusService;
+        mAlarmManager = alarmManager;
+        mAutorotateDataService = autorotateDataService;
     }
 
     @Override
     public void start() {
-        /*if (mContext.getPackageManager().hasSystemFeature("android.hardware.context_hub") && new ElmyraContext(mContext).isAvailable()) {
+        AmbientIndicationContainer ambientIndicationContainer = mStatusBar.getNotificationShadeWindowView().findViewById(R.id.ambient_indication_container);
+        ambientIndicationContainer.initializeView(mStatusBar);
+        addService(new AmbientIndicationService(mContext, ambientIndicationContainer, mAlarmManager));
+        addService(new DisplayCutoutEmulationAdapter(mContext));
+        addService(new CoversheetService(mContext));
+        mAutorotateDataService.init();
+        addService(mAutorotateDataService);
+        if (mContext.getPackageManager().hasSystemFeature("android.hardware.context_hub") && new ElmyraContext(mContext).isAvailable()) {
             addService(new ElmyraService(mContext, mServiceConfigurationGoogle.get(), mUiEventLogger));
-        }*/
+        }
         if (new ColumbusContext(mContext).isAvailable()) {
             addService(mColumbusServiceLazy.get());
+        }
+        if (mContext.getPackageManager().hasSystemFeature("android.hardware.biometrics.face")) {
+            addService(new FaceNotificationService(mContext));
+        }
+        if (mContext.getResources().getBoolean(R.bool.config_touch_context_enabled)) {
+            addService(new TouchContextService(mContext));
         }
     }
 
@@ -80,5 +105,5 @@ public class PixeldustServices extends VendorServices {
             mServices.add(obj);
         }
     }
-
 }
+
