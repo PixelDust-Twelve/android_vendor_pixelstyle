@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2022 The PixelDust Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.pixeldust.android.systemui.qs.tileimpl;
 
 // keep in sync with frameworks/base/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSFactoryImpl.java
@@ -9,7 +25,6 @@ import com.android.systemui.qs.tileimpl.QSFactoryImpl;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
 import com.android.systemui.qs.tiles.AlarmTile;
-import com.android.systemui.qs.tiles.BatterySaverTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
 import com.android.systemui.qs.tiles.CameraToggleTile;
 import com.android.systemui.qs.tiles.CastTile;
@@ -37,10 +52,12 @@ import com.android.systemui.util.leak.GarbageMonitor;
 
 // Custom tiles
 import com.pixeldust.android.systemui.qs.tiles.AODTile;
+import com.pixeldust.android.systemui.qs.tiles.BatterySaverTilePixeldust;
 import com.pixeldust.android.systemui.qs.tiles.CaffeineTile;
 import com.pixeldust.android.systemui.qs.tiles.DataSwitchTile;
 import com.pixeldust.android.systemui.qs.tiles.LocaleTile;
 import com.pixeldust.android.systemui.qs.tiles.PDSettingsTile;
+import com.pixeldust.android.systemui.qs.tiles.ReverseChargingTile;
 import com.pixeldust.android.systemui.qs.tiles.SyncTile;
 import com.pixeldust.android.systemui.qs.tiles.VpnTile;
 
@@ -49,6 +66,7 @@ import javax.inject.Provider;
 
 import dagger.Lazy;
 
+@SysUISingleton
 public class QSFactoryImplPixeldust extends QSFactoryImpl {
 
     private final Provider<CaffeineTile> mCaffeineTileProvider;
@@ -58,6 +76,8 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
     private final Provider<PDSettingsTile> mPDSettingsTileProvider;
     private final Provider<LocaleTile> mLocaleTileProvider;
+    private final Provider<BatterySaverTilePixeldust> mBatterySaverTilePixeldustProvider;
+    private final Provider<ReverseChargingTile> mReverseChargingTileProvider;
 
     @Inject
     public QSFactoryImplPixeldust(
@@ -77,7 +97,7 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
             Provider<CastTile> castTileProvider,
             Provider<HotspotTile> hotspotTileProvider,
             Provider<UserTile> userTileProvider,
-            Provider<BatterySaverTile> batterySaverTileProvider,
+            Provider<BatterySaverTilePixeldust> batterySaverTilePixeldustProvider,
             Provider<DataSaverTile> dataSaverTileProvider,
             Provider<NightDisplayTile> nightDisplayTileProvider,
             Provider<NfcTile> nfcTileProvider,
@@ -96,12 +116,38 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
             Provider<AODTile> aodTileProvider,
             Provider<DataSwitchTile> dataSwitchTileProvider,
             Provider<PDSettingsTile> pdSettingsTileProvider,
-            Provider<LocaleTile> localeTileProvider) {
-        super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
-            airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider, locationTileProvider, castTileProvider, hotspotTileProvider, userTileProvider,
-            batterySaverTileProvider, dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
-            cameraToggleTileProvider, microphoneToggleTileProvider, deviceControlsTileProvider, alarmTileProvider, quickAccessWalletTileProvider);
-        // custom tile
+            Provider<LocaleTile> localeTileProvider,
+            Provider<ReverseChargingTile> reverseChargingTileProvider) {
+        super(qsHostLazy,
+                customTileBuilderProvider,
+                wifiTileProvider,
+                internetTileProvider,
+                bluetoothTileProvider,
+                cellularTileProvider,
+                dndTileProvider,
+                colorInversionTileProvider,
+                airplaneModeTileProvider,
+                workModeTileProvider,
+                rotationLockTileProvider,
+                flashlightTileProvider,
+                locationTileProvider,
+                castTileProvider,
+                hotspotTileProvider,
+                userTileProvider,
+                () -> batterySaverTilePixeldustProvider.get(),
+                dataSaverTileProvider,
+                nightDisplayTileProvider,
+                nfcTileProvider,
+                memoryTileProvider,
+                uiModeNightTileProvider,
+                screenRecordTileProvider,
+                reduceBrightColorsTileProvider,
+                cameraToggleTileProvider,
+                microphoneToggleTileProvider,
+                deviceControlsTileProvider,
+                alarmTileProvider,
+                quickAccessWalletTileProvider);
+        // custom tiles
         mCaffeineTileProvider = caffeineTileProvider;
         mSyncTileProvider = syncTileProvider;
         mVpnTileProvider = vpnTileProvider;
@@ -109,6 +155,17 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
         mDataSwitchTileProvider = dataSwitchTileProvider;
         mPDSettingsTileProvider = pdSettingsTileProvider;
         mLocaleTileProvider = localeTileProvider;
+        mReverseChargingTileProvider = reverseChargingTileProvider;
+        mBatterySaverTilePixeldustProvider = batterySaverTilePixeldustProvider;
+    }
+
+    @Override
+    public QSTile createTile(String str) {
+        QSTileImpl createTileInternal = createTilePixeldust(str);
+        if (createTileInternal != null) {
+            return createTileInternal;
+        }
+        return super.createTile(str);
     }
 
     private QSTileImpl createTilePixeldust(String tileSpec) {
@@ -127,14 +184,12 @@ public class QSFactoryImplPixeldust extends QSFactoryImpl {
                 return mPDSettingsTileProvider.get();
             case "locale":
                 return mLocaleTileProvider.get();
+            case "reverse":
+                return mReverseChargingTileProvider.get();
+            case "battery":
+                return mBatterySaverTilePixeldustProvider.get();
             default:
                 return null;
         }
-    }
-
-    @Override
-    public QSTile createTile(String tileSpec) {
-        QSTile tile = createTilePixeldust(tileSpec);
-        return tile != null ? tile : super.createTile(tileSpec);
     }
 }

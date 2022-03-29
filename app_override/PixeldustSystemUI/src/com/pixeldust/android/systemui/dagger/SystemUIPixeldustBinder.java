@@ -34,7 +34,6 @@ import com.android.systemui.privacy.television.TvOngoingPrivacyChip;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.RecentsModule;
 import com.android.systemui.shortcut.ShortcutKeyDispatcher;
-import com.android.systemui.statusbar.dagger.StatusBarModule;
 import com.android.systemui.statusbar.notification.InstantAppNotifier;
 import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.statusbar.tv.TvStatusBar;
@@ -44,20 +43,19 @@ import com.android.systemui.toast.ToastUI;
 import com.android.systemui.util.leak.GarbageMonitor;
 import com.android.systemui.volume.VolumeUI;
 import com.android.systemui.wmshell.WMShell;
-import com.android.systemui.dagger.SysUISingleton;
-
-import com.google.android.systemui.columbus.ColumbusTargetRequestService;
-import com.google.android.systemui.gamedashboard.GameMenuActivity;
 
 import com.pixeldust.android.systemui.PixeldustServices;
+import com.pixeldust.android.systemui.columbus.ColumbusTargetRequestServiceWrapper;
+import com.pixeldust.android.systemui.gamedashboard.GameMenuActivityWrapper;
 import com.pixeldust.android.systemui.theme.ThemeOverlayControllerPixeldust;
+import com.pixeldust.android.systemui.statusbar.dagger.StatusBarModulePixeldust;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.ClassKey;
 import dagger.multibindings.IntoMap;
 
-@Module(includes = {RecentsModule.class, StatusBarModule.class, KeyguardModule.class})
+@Module(includes = {RecentsModule.class, StatusBarModulePixeldust.class, KeyguardModule.class})
 public abstract class SystemUIPixeldustBinder {
     /**
      * Inject into AuthController.
@@ -248,14 +246,14 @@ public abstract class SystemUIPixeldustBinder {
      */
     @Binds
     @IntoMap
-    @ClassKey(GameMenuActivity.class)
-    public abstract Activity bindGameMenuActivity(GameMenuActivity activity);
+    @ClassKey(GameMenuActivityWrapper.class)
+    public abstract Activity bindGameMenuActivity(GameMenuActivityWrapper activity);
 
     /**
      * Inject into ColumbusTargetRequestService.
      */
     @Binds
     @IntoMap
-    @ClassKey(ColumbusTargetRequestService.class)
-    public abstract Service bindColumbusTargetRequestService(ColumbusTargetRequestService activity);
+    @ClassKey(ColumbusTargetRequestServiceWrapper.class)
+    public abstract Service bindColumbusTargetRequestService(ColumbusTargetRequestServiceWrapper activity);
 }
