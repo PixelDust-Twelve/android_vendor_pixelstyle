@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pixeldust.android.systemui.gamedashboard;
+package org.pixelexperience.systemui.gamedashboard;
 
 import android.content.Context;
 import android.content.Intent;

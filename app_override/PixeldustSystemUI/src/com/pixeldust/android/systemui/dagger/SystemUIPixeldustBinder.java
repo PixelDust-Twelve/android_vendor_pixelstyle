@@ -46,7 +46,7 @@ import com.android.systemui.wmshell.WMShell;
 
 import com.pixeldust.android.systemui.PixeldustServices;
 import com.pixeldust.android.systemui.columbus.ColumbusTargetRequestServiceWrapper;
-import com.pixeldust.android.systemui.gamedashboard.GameMenuActivityWrapper;
+import org.pixelexperience.systemui.gamedashboard.GameMenuActivityWrapper;
 import com.pixeldust.android.systemui.theme.ThemeOverlayControllerPixeldust;
 import com.pixeldust.android.systemui.statusbar.dagger.StatusBarModulePixeldust;
 
