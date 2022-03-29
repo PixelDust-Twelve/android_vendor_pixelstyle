@@ -110,11 +110,11 @@ import com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragmentL
 import com.android.systemui.statusbar.phone.ongoingcall.OngoingCallController;
 import com.android.systemui.statusbar.phone.panelstate.PanelExpansionStateManager;
 import com.android.systemui.statusbar.policy.BatteryController;
-import com.android.systemui.statusbar.policy.BurnInProtectionController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.ExtensionController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
+import com.android.systemui.statusbar.policy.TaskHelper;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.statusbar.window.StatusBarWindowController;
@@ -288,11 +288,11 @@ public class StatusBarPixeldust extends StatusBar {
                            TunerService tunerService,
                            DumpManager dumpManager,
                            ActivityLaunchAnimator activityLaunchAnimator,
-                           BurnInProtectionController burnInProtectionController,
                            SmartSpaceController smartSpaceController,
                            WallpaperNotifier wallpaperNotifier,
                            Optional<ReverseChargingViewController> reverseChargingViewController,
-                           Lazy<Optional<NotificationVoiceReplyClient>> notificationVoiceReplyClient) {
+                           Lazy<Optional<NotificationVoiceReplyClient>> notificationVoiceReplyClient,
+                           TaskHelper taskHelper) {
         super(context, notificationsController, fragmentService, lightBarController, autoHideController,
                 statusBarWindowController, keyguardUpdateMonitor, statusBarSignalPolicy, pulseExpansionHandler,
                 notificationWakeUpCoordinator, keyguardBypassController, keyguardStateController, headsUpManagerPhone,
@@ -316,7 +316,7 @@ public class StatusBarPixeldust extends StatusBar {
                 statusBarHideIconsForBouncerManager, lockscreenShadeTransitionController, featureFlags,
                 keyguardUnlockAnimationController, mainHandler, delayableExecutor, messageRouter, wallpaperManager,
                 unlockedScreenOffAnimationController, startingSurfaceOptional, tunerService, dumpManager, activityLaunchAnimator,
-                burnInProtectionController);
+                taskHelper);
         mSmartSpaceController = smartSpaceController;
         mWallpaperNotifier = wallpaperNotifier;
         mReverseChargingViewController = reverseChargingViewController;
