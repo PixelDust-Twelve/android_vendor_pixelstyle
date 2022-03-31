@@ -16,6 +16,7 @@ android_library {
         "colorkt",
         "themelib",
         "SystemUI-core",
+        "SystemUIGoogle-lib",
         "tensorflowlite_java",
         "com.google.hardware.pixel.display-V3-java",
     ],
