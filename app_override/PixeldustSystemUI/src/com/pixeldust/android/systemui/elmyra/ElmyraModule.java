@@ -2,15 +2,6 @@ package com.pixeldust.android.systemui.elmyra;
 
 import android.content.Context;
 
-import com.google.android.systemui.elmyra.ServiceConfigurationGoogle;
-import com.google.android.systemui.elmyra.actions.CameraAction;
-import com.google.android.systemui.elmyra.actions.SetupWizardAction;
-import com.google.android.systemui.elmyra.feedback.OpaHomeButton;
-import com.google.android.systemui.elmyra.feedback.OpaLockscreen;
-import com.google.android.systemui.elmyra.feedback.SquishyNavigationButtons;
-
-import com.statix.android.systemui.assist.AssistManagerGoogle;
-
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.navigationbar.NavigationModeController;
@@ -19,10 +10,19 @@ import com.android.systemui.statusbar.policy.HeadsUpManager;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.telephony.TelephonyListenerManager;
 
+import com.google.android.systemui.elmyra.ServiceConfigurationGoogle;
+import com.google.android.systemui.elmyra.actions.CameraAction;
+import com.google.android.systemui.elmyra.actions.SetupWizardAction;
+import com.google.android.systemui.elmyra.feedback.OpaHomeButton;
+import com.google.android.systemui.elmyra.feedback.OpaLockscreen;
+import com.google.android.systemui.elmyra.feedback.SquishyNavigationButtons;
+
 import dagger.Module;
 import dagger.Provides;
 
 import java.util.Optional;
+
+import org.pixelexperience.systemui.assist.AssistManagerGoogle;
 
 @Module
 public class ElmyraModule {

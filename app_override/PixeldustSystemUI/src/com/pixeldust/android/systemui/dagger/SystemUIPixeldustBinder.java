@@ -18,6 +18,7 @@ package com.pixeldust.android.systemui.dagger;
 
 import android.app.Activity;
 import android.app.Service;
+
 import com.android.systemui.LatencyTester;
 import com.android.systemui.ScreenDecorations;
 import com.android.systemui.SliceBroadcastRelayHandler;
@@ -46,9 +47,6 @@ import com.android.systemui.volume.VolumeUI;
 import com.android.systemui.wmshell.WMShell;
 import com.android.systemui.dagger.SysUISingleton;
 
-import com.google.android.systemui.columbus.ColumbusTargetRequestService;
-import com.google.android.systemui.gamedashboard.GameMenuActivity;
-
 import com.pixeldust.android.systemui.PixeldustServices;
 import com.pixeldust.android.systemui.theme.ThemeOverlayControllerPixeldust;
 
@@ -56,6 +54,9 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.ClassKey;
 import dagger.multibindings.IntoMap;
+
+import org.pixelexperience.systemui.columbus.ColumbusTargetRequestServiceWrapper;
+import org.pixelexperience.systemui.gamedashboard.GameMenuActivityWrapper;
 
 @Module(includes = {RecentsModule.class, StatusBarModule.class, KeyguardModule.class})
 public abstract class SystemUIPixeldustBinder {
@@ -244,18 +245,18 @@ public abstract class SystemUIPixeldustBinder {
     public abstract SystemUI bindPixeldustServices(PixeldustServices sysui);
 
     /**
-     * Inject into GameMenuActivity.
+     * Inject into GameMenuActivityWrapper.
      */
     @Binds
     @IntoMap
-    @ClassKey(GameMenuActivity.class)
-    public abstract Activity bindGameMenuActivity(GameMenuActivity activity);
+    @ClassKey(GameMenuActivityWrapper.class)
+    public abstract Activity bindGameMenuActivity(GameMenuActivityWrapper activity);
 
     /**
-     * Inject into ColumbusTargetRequestService.
+     * Inject into ColumbusTargetRequestServiceWrapper.
      */
     @Binds
     @IntoMap
-    @ClassKey(ColumbusTargetRequestService.class)
-    public abstract Service bindColumbusTargetRequestService(ColumbusTargetRequestService activity);
+    @ClassKey(ColumbusTargetRequestServiceWrapper.class)
+    public abstract Service bindColumbusTargetRequestService(ColumbusTargetRequestServiceWrapper activity);
 }

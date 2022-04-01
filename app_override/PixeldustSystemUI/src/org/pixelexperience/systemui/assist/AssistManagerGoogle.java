@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.statix.android.systemui.assist;
+package org.pixelexperience.systemui.assist;
 
 import android.content.Context;
 import android.metrics.LogMaker;
@@ -35,7 +35,6 @@ import com.android.systemui.assist.AssistManager;
 import com.android.systemui.assist.AssistantSessionEvent;
 import com.android.systemui.assist.PhoneStateMonitor;
 import com.android.systemui.assist.ui.DefaultUiController;
-import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.model.SysUiState;
 import com.android.systemui.navigationbar.NavigationModeController;
@@ -43,6 +42,7 @@ import com.android.systemui.recents.OverviewProxyService;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
+
 import com.google.android.systemui.assist.OpaEnabledDispatcher;
 import com.google.android.systemui.assist.OpaEnabledListener;
 import com.google.android.systemui.assist.OpaEnabledReceiver;
@@ -51,11 +51,11 @@ import com.google.android.systemui.assist.uihints.GoogleDefaultUiController;
 import com.google.android.systemui.assist.uihints.NgaMessageHandler;
 import com.google.android.systemui.assist.uihints.NgaUiController;
 
+import dagger.Lazy;
+
 import java.util.Objects;
 
 import javax.inject.Inject;
-
-import dagger.Lazy;
 
 @SysUISingleton
 public class AssistManagerGoogle extends AssistManager {
@@ -81,7 +81,7 @@ public class AssistManagerGoogle extends AssistManager {
     };
 
     @Inject
-    public AssistManagerGoogle(DeviceProvisionedController deviceProvisionedController, Context context, AssistUtils assistUtils, NgaUiController ngaUiController, CommandQueue commandQueue, OpaEnabledReceiver opaEnabledReceiver, PhoneStateMonitor phoneStateMonitor, OverviewProxyService overviewProxyService, OpaEnabledDispatcher opaEnabledDispatcher, KeyguardUpdateMonitor keyguardUpdateMonitor, NavigationModeController navigationModeController, AssistantPresenceHandler assistantPresenceHandler, NgaMessageHandler ngaMessageHandler, Lazy<SysUiState> lazy, @Main Handler handler, DefaultUiController defaultUiController, GoogleDefaultUiController googleDefaultUiController, IWindowManager iWindowManager, AssistLogger assistLogger) {
+    public AssistManagerGoogle(DeviceProvisionedController deviceProvisionedController, Context context, AssistUtils assistUtils, NgaUiController ngaUiController, CommandQueue commandQueue, OpaEnabledReceiver opaEnabledReceiver, PhoneStateMonitor phoneStateMonitor, OverviewProxyService overviewProxyService, OpaEnabledDispatcher opaEnabledDispatcher, KeyguardUpdateMonitor keyguardUpdateMonitor, NavigationModeController navigationModeController, AssistantPresenceHandler assistantPresenceHandler, NgaMessageHandler ngaMessageHandler, Lazy<SysUiState> lazy, Handler handler, DefaultUiController defaultUiController, GoogleDefaultUiController googleDefaultUiController, IWindowManager iWindowManager, AssistLogger assistLogger) {
         super(deviceProvisionedController, context, assistUtils, commandQueue, phoneStateMonitor, overviewProxyService, lazy, defaultUiController, assistLogger, handler);
         mUiHandler = handler;
         mOpaEnabledReceiver = opaEnabledReceiver;
@@ -203,3 +203,4 @@ public class AssistManagerGoogle extends AssistManager {
         mSqueezeSetUp = z;
     }
 }
+
