@@ -15,6 +15,9 @@
 #
 #
 
+PRODUCT_SOONG_NAMESPACES += \
+    vendor/pixelstyle/app_override/PixeldustSystemUI
+
 PRODUCT_PACKAGES += \
     PixeldustSystemUI \
     PixeldustSettings
