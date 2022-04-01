@@ -77,7 +77,7 @@
             android:exported="true"/>
 
         <service
-            android:name="com.google.android.systemui.columbus.ColumbusTargetRequestService"
+            android:name="org.pixelexperience.systemui.columbus.ColumbusTargetRequestServiceWrapper"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.systemui.QUICK_TAP_TARGET_REQUEST"/>
@@ -93,7 +93,7 @@
         <!-- Game Dashboard -->
         <activity
             android:theme="@style/GameMenuTheme"
-            android:name="com.google.android.systemui.gamedashboard.GameMenuActivity"
+            android:name="org.pixelexperience.systemui.gamedashboard.GameMenuActivityWrapper"
             android:exported="false"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"

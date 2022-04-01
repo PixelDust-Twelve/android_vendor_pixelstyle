@@ -22,55 +22,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.android.internal.logging.UiEventLogger;
-
-import com.google.android.systemui.assist.GoogleAssistLogger;
-import com.google.android.systemui.assist.OpaEnabledDispatcher;
-import com.google.android.systemui.assist.OpaEnabledReceiver;
-import com.google.android.systemui.assist.OpaEnabledSettings;
-import com.google.android.systemui.assist.uihints.AssistantPresenceHandler;
-import com.google.android.systemui.assist.uihints.AssistantWarmer;
-import com.google.android.systemui.assist.uihints.ColorChangeHandler;
-import com.google.android.systemui.assist.uihints.ConfigurationHandler;
-import com.google.android.systemui.assist.uihints.FlingVelocityWrapper;
-import com.google.android.systemui.assist.uihints.GlowController;
-import com.google.android.systemui.assist.uihints.GoBackHandler;
-import com.google.android.systemui.assist.uihints.GoogleDefaultUiController;
-import com.google.android.systemui.assist.uihints.IconController;
-import com.google.android.systemui.assist.uihints.KeyboardMonitor;
-import com.google.android.systemui.assist.uihints.LightnessProvider;
-import com.google.android.systemui.assist.uihints.NavBarFader;
-import com.google.android.systemui.assist.uihints.NgaMessageHandler;
-import com.google.android.systemui.assist.uihints.NgaUiController;
-import com.google.android.systemui.assist.uihints.OverlappedElementController;
-import com.google.android.systemui.assist.uihints.OverlayUiHost;
-import com.google.android.systemui.assist.uihints.ScrimController;
-import com.google.android.systemui.assist.uihints.TakeScreenshotHandler;
-import com.google.android.systemui.assist.uihints.TaskStackNotifier;
-import com.google.android.systemui.assist.uihints.TimeoutManager;
-import com.google.android.systemui.assist.uihints.TouchInsideHandler;
-import com.google.android.systemui.assist.uihints.TouchOutsideHandler;
-import com.google.android.systemui.assist.uihints.TranscriptionController;
-import com.google.android.systemui.assist.uihints.edgelights.EdgeLightsController;
-import com.google.android.systemui.assist.uihints.input.NgaInputHandler;
-import com.google.android.systemui.assist.uihints.input.TouchActionRegion;
-import com.google.android.systemui.assist.uihints.input.TouchInsideRegion;
-import com.google.android.systemui.columbus.ColumbusServiceWrapper;
-import com.google.android.systemui.elmyra.ServiceConfigurationGoogle;
-import com.google.android.systemui.smartspace.BcSmartspaceDataProvider;
-import com.google.android.systemui.smartspace.KeyguardMediaViewController;
-import com.google.android.systemui.smartspace.KeyguardZenAlarmViewController;
-import com.google.android.systemui.smartspace.SmartSpaceController;
-
-import com.pixeldust.android.systemui.PixeldustServices;
-import com.pixeldust.android.systemui.biometrics.PixeldustUdfpsHbmProvider;
-import com.pixeldust.android.systemui.smartspace.KeyguardSmartspaceController;
-import com.pixeldust.android.systemui.qs.tileimpl.QSFactoryImplPixeldust;
-import com.pixeldust.android.systemui.theme.ThemeOverlayControllerPixeldust;
-
-import com.statix.android.systemui.assist.AssistManagerGoogle;
-
 import com.android.internal.app.AssistUtils;
+import com.android.internal.logging.UiEventLogger;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardViewController;
 import com.android.systemui.assist.AssistLogger;
@@ -143,6 +96,56 @@ import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.sensors.ProximitySensor;
 import com.android.systemui.volume.dagger.VolumeModule;
 
+import com.google.android.systemui.assist.GoogleAssistLogger;
+import com.google.android.systemui.assist.OpaEnabledDispatcher;
+import com.google.android.systemui.assist.OpaEnabledReceiver;
+import com.google.android.systemui.assist.OpaEnabledSettings;
+import com.google.android.systemui.assist.uihints.AssistantPresenceHandler;
+import com.google.android.systemui.assist.uihints.AssistantWarmer;
+import com.google.android.systemui.assist.uihints.ColorChangeHandler;
+import com.google.android.systemui.assist.uihints.ConfigurationHandler;
+import com.google.android.systemui.assist.uihints.FlingVelocityWrapper;
+import com.google.android.systemui.assist.uihints.GlowController;
+import com.google.android.systemui.assist.uihints.GoBackHandler;
+import com.google.android.systemui.assist.uihints.GoogleDefaultUiController;
+import com.google.android.systemui.assist.uihints.IconController;
+import com.google.android.systemui.assist.uihints.KeyboardMonitor;
+import com.google.android.systemui.assist.uihints.LightnessProvider;
+import com.google.android.systemui.assist.uihints.NavBarFader;
+import com.google.android.systemui.assist.uihints.NgaMessageHandler;
+import com.google.android.systemui.assist.uihints.NgaUiController;
+import com.google.android.systemui.assist.uihints.OverlappedElementController;
+import com.google.android.systemui.assist.uihints.OverlayUiHost;
+import com.google.android.systemui.assist.uihints.ScrimController;
+import com.google.android.systemui.assist.uihints.TakeScreenshotHandler;
+import com.google.android.systemui.assist.uihints.TaskStackNotifier;
+import com.google.android.systemui.assist.uihints.TimeoutManager;
+import com.google.android.systemui.assist.uihints.TouchInsideHandler;
+import com.google.android.systemui.assist.uihints.TouchOutsideHandler;
+import com.google.android.systemui.assist.uihints.TranscriptionController;
+import com.google.android.systemui.assist.uihints.edgelights.EdgeLightsController;
+import com.google.android.systemui.assist.uihints.input.NgaInputHandler;
+import com.google.android.systemui.assist.uihints.input.TouchActionRegion;
+import com.google.android.systemui.assist.uihints.input.TouchInsideRegion;
+import com.google.android.systemui.columbus.ColumbusServiceWrapper;
+import com.google.android.systemui.elmyra.ServiceConfigurationGoogle;
+import com.google.android.systemui.smartspace.BcSmartspaceDataProvider;
+import com.google.android.systemui.smartspace.KeyguardMediaViewController;
+import com.google.android.systemui.smartspace.KeyguardZenAlarmViewController;
+import com.google.android.systemui.smartspace.SmartSpaceController;
+
+import com.pixeldust.android.systemui.PixeldustServices;
+import com.pixeldust.android.systemui.biometrics.PixeldustUdfpsHbmProvider;
+import com.pixeldust.android.systemui.smartspace.KeyguardSmartspaceController;
+import com.pixeldust.android.systemui.qs.tileimpl.QSFactoryImplPixeldust;
+import com.pixeldust.android.systemui.theme.ThemeOverlayControllerPixeldust;
+
+import dagger.Binds;
+import dagger.Lazy;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.ElementsIntoSet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -156,11 +159,7 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Named;
 
-import dagger.Binds;
-import dagger.Lazy;
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.ElementsIntoSet;
+import org.pixelexperience.systemui.assist.AssistManagerGoogle;
 
 @Module(includes = {
         MediaModule.class,
