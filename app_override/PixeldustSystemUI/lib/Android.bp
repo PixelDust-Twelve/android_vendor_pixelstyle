@@ -1,5 +1,0 @@
-java_import  {
-	name: "SystemUIGoogle-lib",
-    sdk_version: "current",
-	jars: ["SystemUIGoogle.jar"],
-}

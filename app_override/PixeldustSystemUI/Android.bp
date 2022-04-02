@@ -1,7 +1,3 @@
-soong_namespace {
-    imports: ["hardware/google/interfaces"],
-}
-
 android_library {
     name: "PixeldustSystemUI-core",
     srcs: [
@@ -11,21 +7,9 @@ android_library {
     ],
     resource_dirs: [
         "res",
-        "res-assist",
-        "res-columbus",
-        "res-elmyra",
-        "res-gamedashboard",
-        "res-keyguard",
-        "res-smartspace",
     ],
     static_libs: [
-        "colorkt",
-        "themelib",
         "SystemUI-core",
-        "SystemUIGoogle-lib",
-        "tensorflowlite_java",
-        "com.google.hardware.pixel.display-V3-java",
-        "vendor-pixelatoms-java",
     ],
     manifest: "AndroidManifest.xml",
 
@@ -40,14 +24,6 @@ android_app {
     static_libs: [
         "PixeldustSystemUI-core",
     ],
-    jni_libs: [
-        "libtensorflowlite_jni",
-    ],
-    aaptflags: [
-        "-0 .tflite",
-        "-0 .vocab",
-    ],
-    asset_dirs: ["assets"],
     use_embedded_native_libs: true,
     platform_apis: true,
     system_ext_specific: true,
