@@ -35,7 +35,6 @@ import com.android.systemui.privacy.television.TvOngoingPrivacyChip;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.RecentsModule;
 import com.android.systemui.shortcut.ShortcutKeyDispatcher;
-import com.android.systemui.statusbar.dagger.StatusBarModule;
 import com.android.systemui.statusbar.notification.InstantAppNotifier;
 import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.statusbar.tv.TvStatusBar;
@@ -49,6 +48,7 @@ import com.android.systemui.dagger.SysUISingleton;
 
 import com.pixeldust.android.systemui.PixeldustServices;
 import com.pixeldust.android.systemui.theme.ThemeOverlayControllerPixeldust;
+import com.pixeldust.android.systemui.statusbar.dagger.StatusBarModulePixeldust;
 
 import dagger.Binds;
 import dagger.Module;
@@ -58,7 +58,7 @@ import dagger.multibindings.IntoMap;
 import org.pixelexperience.systemui.columbus.ColumbusTargetRequestServiceWrapper;
 import org.pixelexperience.systemui.gamedashboard.GameMenuActivityWrapper;
 
-@Module(includes = {RecentsModule.class, StatusBarModule.class, KeyguardModule.class})
+@Module(includes = {RecentsModule.class, StatusBarModulePixeldust.class, KeyguardModule.class})
 public abstract class SystemUIPixeldustBinder {
     /**
      * Inject into AuthController.

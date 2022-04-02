@@ -11,12 +11,8 @@ android_library {
     ],
     resource_dirs: [
         "res",
-        "res-assist",
-        "res-columbus",
-        "res-elmyra",
-        "res-gamedashboard",
         "res-keyguard",
-        "res-smartspace",
+        "res-pixel",
     ],
     static_libs: [
         "colorkt",

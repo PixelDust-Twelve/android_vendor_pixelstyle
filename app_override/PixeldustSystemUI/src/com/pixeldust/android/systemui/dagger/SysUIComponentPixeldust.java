@@ -2,9 +2,9 @@ package com.pixeldust.android.systemui.dagger;
 
 import com.android.systemui.dagger.DefaultComponentBinder;
 import com.android.systemui.dagger.DependencyProvider;
-import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.SystemUIBinder;
 import com.android.systemui.dagger.SysUIComponent;
+import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.SystemUIModule;
 
 import com.pixeldust.android.systemui.columbus.ColumbusModule;
@@ -24,6 +24,7 @@ import dagger.Subcomponent;
         GameDashboardModule.class,
         SystemUIModule.class,
         SystemUIPixeldustBinder.class,
+        SystemUIPixeldustDependencyProvider.class,
         SystemUIPixeldustModule.class})
 public interface SysUIComponentPixeldust extends SysUIComponent {
     @SysUISingleton
@@ -35,7 +36,7 @@ public interface SysUIComponentPixeldust extends SysUIComponent {
     /**
      * Member injection into the supplied argument.
      */
-    void inject(KeyguardSliceProviderPixeldust keyguardSliceProviderPixeldust);
+    void inject(KeyguardSliceProviderPixeldust keyguardSliceProvider);
 
     @SysUISingleton
     KeyguardSmartspaceController createKeyguardSmartspaceController();

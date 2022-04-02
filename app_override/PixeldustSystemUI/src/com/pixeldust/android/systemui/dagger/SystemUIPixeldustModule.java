@@ -32,9 +32,9 @@ import com.android.systemui.assist.PhoneStateMonitor;
 import com.android.systemui.assist.ui.DefaultUiController;
 import com.android.systemui.biometrics.UdfpsHbmProvider;
 import com.android.systemui.broadcast.BroadcastDispatcher;
+import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
-import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.demomode.DemoModeController;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.dock.DockManagerImpl;
@@ -45,6 +45,7 @@ import com.android.systemui.keyguard.WakefulnessLifecycle;
 import com.android.systemui.media.dagger.MediaModule;
 import com.android.systemui.model.SysUiState;
 import com.android.systemui.navigationbar.NavigationBarController;
+import com.android.systemui.navigationbar.NavigationBarOverlayController;
 import com.android.systemui.navigationbar.NavigationModeController;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.BcSmartspaceDataPlugin;
@@ -60,6 +61,7 @@ import com.android.systemui.recents.OverviewProxyService;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.RecentsImplementation;
 import com.android.systemui.settings.UserTracker;
+import com.android.systemui.settings.UserContentResolverProvider;
 import com.android.systemui.statusbar.commandline.CommandRegistry;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
@@ -77,8 +79,8 @@ import com.android.systemui.statusbar.phone.ShadeController;
 import com.android.systemui.statusbar.phone.ShadeControllerImpl;
 import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
+import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.policy.BatteryController;
-import com.android.systemui.statusbar.policy.BatteryControllerImpl;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedControllerImpl;
@@ -96,6 +98,8 @@ import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.sensors.ProximitySensor;
 import com.android.systemui.volume.dagger.VolumeModule;
 
+import com.google.android.systemui.LiveWallpaperScrimController;
+import com.google.android.systemui.NotificationLockscreenUserManagerGoogle;
 import com.google.android.systemui.assist.GoogleAssistLogger;
 import com.google.android.systemui.assist.OpaEnabledDispatcher;
 import com.google.android.systemui.assist.OpaEnabledReceiver;
@@ -127,17 +131,26 @@ import com.google.android.systemui.assist.uihints.edgelights.EdgeLightsControlle
 import com.google.android.systemui.assist.uihints.input.NgaInputHandler;
 import com.google.android.systemui.assist.uihints.input.TouchActionRegion;
 import com.google.android.systemui.assist.uihints.input.TouchInsideRegion;
+import com.google.android.systemui.autorotate.AutorotateDataService;
 import com.google.android.systemui.columbus.ColumbusServiceWrapper;
+import com.google.android.systemui.dreamliner.DockObserver;
+import com.google.android.systemui.gamedashboard.EntryPointController;
 import com.google.android.systemui.elmyra.ServiceConfigurationGoogle;
+import com.google.android.systemui.power.EnhancedEstimatesGoogleImpl;
+import com.google.android.systemui.reversecharging.ReverseChargingController;
 import com.google.android.systemui.smartspace.BcSmartspaceDataProvider;
 import com.google.android.systemui.smartspace.KeyguardMediaViewController;
 import com.google.android.systemui.smartspace.KeyguardZenAlarmViewController;
 import com.google.android.systemui.smartspace.SmartSpaceController;
+import com.google.android.systemui.statusbar.KeyguardIndicationControllerGoogle;
+import com.google.android.systemui.statusbar.policy.BatteryControllerImplGoogle;
 
 import com.pixeldust.android.systemui.PixeldustServices;
 import com.pixeldust.android.systemui.biometrics.PixeldustUdfpsHbmProvider;
-import com.pixeldust.android.systemui.smartspace.KeyguardSmartspaceController;
+import com.pixeldust.android.systemui.power.dagger.PowerModulePixeldust;
+import com.pixeldust.android.systemui.qs.dagger.QSModulePixeldust;
 import com.pixeldust.android.systemui.qs.tileimpl.QSFactoryImplPixeldust;
+import com.pixeldust.android.systemui.smartspace.KeyguardSmartspaceController;
 import com.pixeldust.android.systemui.theme.ThemeOverlayControllerPixeldust;
 
 import dagger.Binds;
@@ -163,8 +176,8 @@ import org.pixelexperience.systemui.assist.AssistManagerGoogle;
 
 @Module(includes = {
         MediaModule.class,
-        PowerModule.class,
-        QSModule.class,
+        PowerModulePixeldust.class,
+        QSModulePixeldust.class,
         VolumeModule.class
 })
 public abstract class SystemUIPixeldustModule {
@@ -192,15 +205,19 @@ public abstract class SystemUIPixeldustModule {
             BroadcastDispatcher broadcastDispatcher,
             DemoModeController demoModeController,
             @Main Handler mainHandler,
-            @Background Handler bgHandler) {
-        BatteryController bC = new BatteryControllerImpl(
+            @Background Handler bgHandler,
+            UserContentResolverProvider userContentResolverProvider,
+            ReverseChargingController reverseChargingController) {
+        BatteryController bC = new BatteryControllerImplGoogle(
                 context,
                 enhancedEstimates,
                 powerManager,
                 broadcastDispatcher,
                 demoModeController,
                 mainHandler,
-                bgHandler);
+                bgHandler,
+                userContentResolverProvider,
+                reverseChargingController);
         bC.init();
         return bC;
     }
@@ -295,8 +312,8 @@ public abstract class SystemUIPixeldustModule {
 
     @Provides
     @SysUISingleton
-    static PixeldustServices providePixeldustServices(Context context, UiEventLogger uiEventLogger, Lazy<ServiceConfigurationGoogle> lazy, Lazy<ColumbusServiceWrapper> lazyB) {
-        return new PixeldustServices(context, uiEventLogger, lazy, lazyB);
+    static PixeldustServices providePixeldustServices(Context context, Lazy<ServiceConfigurationGoogle> lazy, StatusBar statusBar, UiEventLogger uiEventLogger, Lazy<ColumbusServiceWrapper> lazyB, AlarmManager alarmManager, AutorotateDataService autorotateDataService) {
+        return new PixeldustServices(context, lazy, statusBar, uiEventLogger, lazyB, alarmManager, autorotateDataService);
     }
 
     // Google
@@ -341,6 +358,9 @@ public abstract class SystemUIPixeldustModule {
     @Binds
     @SysUISingleton
     abstract AssistManager bindAssistManagerGoogle(AssistManagerGoogle assistManager);
+
+    @Binds
+    abstract KeyguardIndicationController bindKeyguardIndicationControllerGoogle(KeyguardIndicationControllerGoogle keyguardIndicationControllerGoogle);
 
     @Provides
     @SysUISingleton
