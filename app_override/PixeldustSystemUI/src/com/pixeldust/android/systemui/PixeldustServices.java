@@ -23,6 +23,7 @@ import com.android.internal.logging.UiEventLogger;
 import com.android.systemui.Dumpable;
 import com.android.systemui.R;
 import com.android.systemui.VendorServices;
+import com.android.systemui.ambientmusic.AmbientIndicationContainer;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.statusbar.phone.StatusBar;
@@ -69,6 +70,8 @@ public class PixeldustServices extends VendorServices {
 
     @Override
     public void start() {
+        AmbientIndicationContainer ambientIndicationContainer = mStatusBar.getNotificationShadeWindowView().findViewById(R.id.ambient_indication_container);
+        ambientIndicationContainer.initializeView(mStatusBar);
         addService(new DisplayCutoutEmulationAdapter(mContext));
         addService(new CoversheetService(mContext));
         mAutorotateDataService.init();
