@@ -330,12 +330,12 @@ public class StatusBarPixeldust extends StatusBar {
     public void start() {
         super.start();
         mBatteryController.observe(getLifecycle(), mBatteryStateChangeCallback);
-        ((NotificationLockscreenUserManagerGoogle) Dependency.get(NotificationLockscreenUserManager.class)).updateSmartSpaceVisibilitySettings();
+        /*((NotificationLockscreenUserManagerGoogle) Dependency.get(NotificationLockscreenUserManager.class)).updateSmartSpaceVisibilitySettings();
         DockObserver dockObserver = (DockObserver) Dependency.get(DockManager.class);
         dockObserver.setDreamlinerGear(mNotificationShadeWindowView.findViewById(R.id.dreamliner_gear));
         dockObserver.setPhotoPreview(mNotificationShadeWindowView.findViewById(R.id.photo_preview));
         dockObserver.setIndicationController(new DockIndicationController(mContext, mKeyguardIndicationController, mStatusBarStateController, this));
-        dockObserver.registerDockAlignInfo();
+        dockObserver.registerDockAlignInfo();*/
         mReverseChargingViewController.ifPresent(ReverseChargingViewController::initialize);
         mWallpaperNotifier.attach();
         mVoiceReplyClient.get().ifPresent(NotificationVoiceReplyClient::startClient);
