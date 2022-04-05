@@ -1,22 +1,31 @@
 package com.pixeldust.android.systemui.keyguard;
 
 import android.app.PendingIntent;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.media.MediaMetadata;
+import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
+
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.slice.Slice;
 import androidx.slice.builders.ListBuilder;
 import androidx.slice.builders.SliceAction;
+
 import com.android.systemui.R;
 import com.android.systemui.keyguard.KeyguardSliceProvider;
+import com.android.systemui.statusbar.NotificationMediaManager;
+import com.android.systemui.statusbar.StatusBarState;
+
 import com.google.android.systemui.smartspace.SmartSpaceCard;
 import com.google.android.systemui.smartspace.SmartSpaceController;
 import com.google.android.systemui.smartspace.SmartSpaceData;
@@ -27,7 +36,9 @@ import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 public class KeyguardSliceProviderPixeldust extends KeyguardSliceProvider implements SmartSpaceUpdateListener {
-    private static final boolean DEBUG = Log.isLoggable("KeyguardSliceProvider", 3);
+
+    private static final String TAG = "KeyguardSliceProviderPixeldust";
+    private static final boolean DEBUG = true; //Log.isLoggable("KeyguardSliceProvider", 3);
     private boolean mHideSensitiveContent;
     @Inject
     public SmartSpaceController mSmartSpaceController;
@@ -35,6 +46,8 @@ public class KeyguardSliceProviderPixeldust extends KeyguardSliceProvider implem
     private boolean mHideWorkContent = true;
     private final Uri mWeatherUri = Uri.parse("content://com.android.systemui.keyguard/smartSpace/weather");
     private final Uri mCalendarUri = Uri.parse("content://com.android.systemui.keyguard/smartSpace/calendar");
+
+    private static final String PULSE_ACTION = "com.android.systemui.doze.pulse";
 
     @Override // com.android.systemui.keyguard.KeyguardSliceProvider, androidx.slice.SliceProvider
     public boolean onCreateSliceProvider() {
@@ -176,6 +189,82 @@ public class KeyguardSliceProviderPixeldust extends KeyguardSliceProvider implem
 
     @Override // com.android.systemui.keyguard.KeyguardSliceProvider
     protected void updateClockLocked() {
+        notifyChange();
+    }
+
+    /**
+     * Called whenever new media metadata is available.
+     * @param metadata New metadata.
+     */
+    @Override
+    public void onPrimaryMetadataOrStateChanged(MediaMetadata metadata,
+            @PlaybackState.State int state) {
+        synchronized (this) {
+            boolean nextVisible = NotificationMediaManager.isPlayingState(state) || mMediaManager.getNowPlayingTrack() != null;
+            mMediaHandler.removeCallbacksAndMessages(null);
+            if (mMediaIsVisible && !nextVisible && mStatusBarState != StatusBarState.SHADE) {
+                // We need to delay this event for a few millis when stopping to avoid jank in the
+                // animation. The media app might not send its update when buffering, and the slice
+                // would end up without a header for 0.5 second.
+                mMediaWakeLock.setAcquired(true);
+                mMediaHandler.postDelayed(() -> {
+                    synchronized (this) {
+                        updateMediaStateLocked(metadata, state);
+                        mMediaWakeLock.setAcquired(false);
+                    }
+                }, 2000);
+            } else {
+                mMediaWakeLock.setAcquired(false);
+                updateMediaStateLocked(metadata, state);
+            }
+        }
+    }
+
+    protected void updateMediaStateLocked(MediaMetadata metadata, @PlaybackState.State int state) {
+        boolean nextVisible = NotificationMediaManager.isPlayingState(state);
+
+        Log.d(TAG, "updateMediaStateLocked " + mPulseOnNewTracks);
+
+        // Get track info from Now Playing notification, if available, and only if there's no playing media notification
+        CharSequence npTitle = mMediaManager.getNowPlayingTrack();
+        mNowPlayingAvailable = !nextVisible && npTitle != null;
+
+        // Get track info from player media notification, if available
+        CharSequence title = null;
+        if (metadata != null) {
+            title = metadata.getText(MediaMetadata.METADATA_KEY_TITLE);
+            if (TextUtils.isEmpty(title)) {
+                title = getContext().getResources().getString(R.string.music_controls_no_title);
+            }
+        }
+        CharSequence artist = metadata == null ? null : metadata.getText(
+                MediaMetadata.METADATA_KEY_ARTIST);
+
+        // If Now playing is available, and there's no playing media notification, get Now Playing title
+        title = mNowPlayingAvailable ? npTitle : title;
+
+        if (nextVisible == mMediaIsVisible && TextUtils.equals(title, mMediaTitle)
+                && TextUtils.equals(artist, mMediaArtist)) {
+            return;
+        }
+        if (mNowPlayingAvailable == mMediaIsVisible && TextUtils.equals(title, mMediaTitle)) {
+            return;
+        }
+
+        // Set new track info from playing media notification
+        mMediaTitle = title;
+        mMediaArtist = mNowPlayingAvailable ? null : artist;
+        mMediaIsVisible = nextVisible || mNowPlayingAvailable;
+
+        // if AoD is disabled, the device is not already dozing and we get a new track, trigger an ambient pulse event
+        if (mPulseOnNewTracks && mMediaIsVisible
+                && !mDozeParameters.getAlwaysOn() && mDozing) {
+            getContext().sendBroadcastAsUser(new Intent(PULSE_ACTION),
+                    new UserHandle(UserHandle.USER_CURRENT));
+            Log.d(TAG, "sendBroadcastAsUser AMBIENT PULSE " + mPulseOnNewTracks);
+        } else {
+            Log.d(TAG, "No AMBIENT PULSE " + mPulseOnNewTracks);
+        }
         notifyChange();
     }
 

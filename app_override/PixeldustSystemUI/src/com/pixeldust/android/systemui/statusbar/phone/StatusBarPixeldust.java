@@ -18,6 +18,7 @@ package com.pixeldust.android.systemui.statusbar.phone;
 
 import static com.android.systemui.Dependency.TIME_TICK_HANDLER_NAME;
 
+import android.annotation.Nullable;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.os.Handler;
@@ -26,6 +27,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.keyguard.KeyguardUpdateMonitor;
@@ -66,6 +68,7 @@ import com.android.systemui.statusbar.NotificationShadeWindowController;
 import com.android.systemui.statusbar.NotificationViewHierarchyManager;
 import com.android.systemui.statusbar.OperatorNameViewController;
 import com.android.systemui.statusbar.PulseExpansionHandler;
+import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.statusbar.connectivity.NetworkController;
 import com.android.systemui.statusbar.events.SystemStatusAnimationScheduler;
@@ -137,6 +140,8 @@ import com.google.android.systemui.statusbar.KeyguardIndicationControllerGoogle;
 import com.google.android.systemui.statusbar.notification.voicereplies.NotificationVoiceReplyClient;
 import com.google.android.systemui.statusbar.phone.WallpaperNotifier;
 
+import com.pixeldust.android.systemui.ambientmusic.AmbientIndicationContainer;
+
 import dagger.Lazy;
 
 import java.io.FileDescriptor;
@@ -147,7 +152,7 @@ import java.util.concurrent.Executor;
 import javax.inject.Named;
 
 public class StatusBarPixeldust extends StatusBar {
-    public static final boolean DEBUG = Log.isLoggable("StatusBarPixeldust", Log.DEBUG);
+    public static final boolean DEBUG = true; // Log.isLoggable("StatusBarPixeldust", Log.DEBUG);
     private final KeyguardIndicationControllerGoogle mKeyguardIndicationController;
     private final SmartSpaceController mSmartSpaceController;
     private final SysuiStatusBarStateController mStatusBarStateController;
@@ -158,6 +163,7 @@ public class StatusBarPixeldust extends StatusBar {
     private boolean mChargingAnimShown;
     private int mReceivingBatteryLevel;
     private boolean mReverseChargingAnimShown;
+    @Nullable protected View mAmbientIndicationContainer;
 
     private final BatteryController.BatteryStateChangeCallback mBatteryStateChangeCallback = new BatteryController.BatteryStateChangeCallback() {
         @Override
@@ -339,6 +345,44 @@ public class StatusBarPixeldust extends StatusBar {
         mReverseChargingViewController.ifPresent(ReverseChargingViewController::initialize);
         mWallpaperNotifier.attach();
         mVoiceReplyClient.get().ifPresent(NotificationVoiceReplyClient::startClient);
+
+        mAmbientIndicationContainer = mNotificationShadeWindowView.findViewById(R.id.ambient_indication_container);
+        ((AmbientIndicationContainer)mAmbientIndicationContainer).initializeView(this);
+        //this.setAmbientIndicationContainer(ambientIndicationContainer);
+    }
+
+    @Override
+    protected void updateDozingState() {
+        super.updateDozingState();
+        if (mAmbientIndicationContainer != null) {
+            ((AmbientIndicationContainer)mAmbientIndicationContainer)
+                    .updateDozingState(mDozing);
+            if (DEBUG) {
+                Log.d("StatusBar", "AmbientIndicationContainer updateDozingState " + mDozing);
+            }
+
+        } else {
+            if (DEBUG) {            
+                Log.d("StatusBar", "updateDozingState -> AmbientIndicationContainer null");
+            }
+        }
+    }
+
+    @Override
+    protected void updateKeyguardState() {
+        super.updateKeyguardState();
+        if (mAmbientIndicationContainer != null) {
+            ((AmbientIndicationContainer)mAmbientIndicationContainer)
+                    .updateKeyguardState(mStatusBarStateController.getState() == StatusBarState.KEYGUARD);
+            boolean val = mStatusBarStateController.getState() == StatusBarState.KEYGUARD;
+            if (DEBUG) {
+                Log.d("StatusBar", "AmbientIndicationContainer updateKeyguardState " + val);
+            }
+        } else {
+            if (DEBUG) {
+                Log.d("StatusBar", "updateKeyguardState -> AmbientIndicationContainer null");
+            }
+        }
     }
 
     @Override

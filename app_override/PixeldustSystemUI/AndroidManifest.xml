@@ -92,7 +92,7 @@
             tools:node="remove" />
 
         <provider android:name="com.pixeldust.android.systemui.keyguard.KeyguardSliceProviderPixeldust"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="true"
             android:authorities="com.android.systemui.keyguard"/>
 

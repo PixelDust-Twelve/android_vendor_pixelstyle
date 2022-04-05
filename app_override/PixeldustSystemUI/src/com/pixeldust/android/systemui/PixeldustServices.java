@@ -23,10 +23,9 @@ import com.android.internal.logging.UiEventLogger;
 import com.android.systemui.Dumpable;
 import com.android.systemui.R;
 import com.android.systemui.VendorServices;
-import com.android.systemui.ambientmusic.AmbientIndicationContainer;
 import com.android.systemui.dagger.SysUISingleton;
-import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.statusbar.phone.StatusBar;
+import com.android.systemui.flags.FeatureFlags;
 
 import com.google.android.systemui.DisplayCutoutEmulationAdapter;
 import com.google.android.systemui.autorotate.AutorotateDataService;
@@ -38,6 +37,9 @@ import com.google.android.systemui.elmyra.ElmyraService;
 import com.google.android.systemui.elmyra.ServiceConfigurationGoogle;
 import com.google.android.systemui.face.FaceNotificationService;
 import com.google.android.systemui.input.TouchContextService;
+
+import com.pixeldust.android.systemui.ambientmusic.AmbientIndicationContainer;
+import com.pixeldust.android.systemui.statusbar.phone.StatusBarPixeldust;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -70,8 +72,11 @@ public class PixeldustServices extends VendorServices {
 
     @Override
     public void start() {
-        AmbientIndicationContainer ambientIndicationContainer = mStatusBar.getNotificationShadeWindowView().findViewById(R.id.ambient_indication_container);
-        ambientIndicationContainer.initializeView(mStatusBar);
+        /*StatusBarPixeldust statusBarPixeldust = (StatusBarPixeldust) mStatusBar;
+        AmbientIndicationContainer ambientIndicationContainer = statusBarPixeldust.getNotificationShadeWindowView().findViewById(R.id.ambient_indication_container);
+        ambientIndicationContainer.initializeView(statusBarPixeldust);
+        statusBarPixeldust.setAmbientIndicationContainer(ambientIndicationContainer);*/
+        
         addService(new DisplayCutoutEmulationAdapter(mContext));
         addService(new CoversheetService(mContext));
         mAutorotateDataService.init();
